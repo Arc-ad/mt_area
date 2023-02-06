@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(isset($_SESSION['user'])){
+if (isset($_SESSION['user'])) {
     header('Location: profile.php');
 }
 ?>
@@ -13,31 +13,40 @@ if(isset($_SESSION['user'])){
     <link rel="stylesheet" href="assets/styles/main.css">
 </head>
 <body>
-<!-- Форма регистрации -->
-<form>
-    <label >Имя</label>
-    <input type="text" name="name" placeholder="Введите свое имя">
+<div id="noJS">Please enable JavaScript...</div>
+<div id="site">
+    <!-- Форма регистрации -->
+    <form>
+        <label>Имя</label>
+        <input type="text" name="name" placeholder="Введите свое имя">
 
-    <label >Логин</label>
-    <input type="text" name="login" placeholder="Введите свой логин">
+        <label>Логин</label>
+        <input type="text" name="login" placeholder="Введите свой логин">
 
-    <label >Почта</label>
-    <input type="email" name="email" placeholder="Введите адрес электронной почты">
+        <label>Почта</label>
+        <input type="email" name="email" placeholder="Введите адрес электронной почты">
 
-    <label>Пароль</label>
-    <input type="password" name="password" placeholder="Введите пароль">
+        <label>Пароль</label>
+        <input type="password" name="password" placeholder="Введите пароль">
 
-    <label>Подтверждение пароля</label>
-    <input type="password" name="password_confirm" placeholder="Подтвердите пароль">
+        <label>Подтверждение пароля</label>
+        <input type="password" name="password_confirm" placeholder="Подтвердите пароль">
 
-    <button type="submit" class="register-btn">Войти</button>
-    <p>
-        У вас уже есть аккаунт? - <a href="index.php">Авторизируйтесь</a>!
-    </p>
-    <p class="msg none">Lorem ipsum dolor sit amet.</p>'
+        <button type="submit" class="register-btn">Войти</button>
+        <p>
+            У вас уже есть аккаунт? - <a href="index.php">Авторизируйтесь</a>!
+        </p>
+        <p class="msg none">Lorem ipsum dolor sit amet.</p>'
 
-</form>
+    </form>
+</div>
 <script src="assets/js/jquery-3.6.3.js"></script>
 <script src="assets/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#noJS").hide();
+        $("#site").show();
+    });
+</script>
 </body>
 </html>
