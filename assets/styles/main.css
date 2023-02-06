@@ -58,3 +58,9 @@ button {
     border: 1px solid #ff081d;
     padding: 5px;
 }
+.none{
+    display: none;
+}
+.error {
+    border-bottom: 2px solid #be3411;
+}

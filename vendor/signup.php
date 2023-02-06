@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-require_once 'connect.php';
+include_once '../assets/path.php';
 
 $name = test_input($_POST['name']);
 $login = test_input($_POST['login']);
@@ -11,62 +11,70 @@ $password_confirm = test_input($_POST['password_confirm']);
 
 
 if (mb_strlen($name) < 2 && !ctype_alpha($name)) {
-    $_SESSION['err_name'] = "Минимум 2 символа, только буквы!";
+    $error_fields[] = 'name';
 }
-if (!ctype_graph($login) || mb_strlen($login) < 6 ) {
-    $_SESSION['err_login'] = 'Минимум 6 символов';
+if (!ctype_graph($login) || mb_strlen($login) < 6) {
+    $error_fields[] = 'login';
 }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $_SESSION['err_email'] = "Введите действующий Email";
+    $error_fields[] = 'email';
 }
-if (!ctype_graph($password) || mb_strlen($password) < 6 || (!preg_match('/[A-zА-я]+/', $password)) || (!preg_match('/[0-9]+/', $password))) {
-    $_SESSION['err_pass'] = 'Минимум 6 символов , обязательно должны состоять из цифр и букв';
-} elseif ($password !== $password_confirm) {
-    $_SESSION['err_pass_confirm'] = "Пароли должны совпадать!";
+if (!ctype_graph($password) || mb_strlen($password) < 6 || (!preg_match('/[A-z]+/', $password)) || (!preg_match('/[0-9]+/', $password))) {
+    $error_fields[] = 'password';
 }
-if (isset($_SESSION['err_name']) || isset($_SESSION['err_login']) || isset($_SESSION['err_email']) || isset($_SESSION['err_pass'])) {
-    header('location: ../register.php');
-} else {
-    $user = [
-        'name' => $name,
-        'login' => $login,
-        'email' => $email,
-        'password' => md5($password)
+if ($password !== $password_confirm) {
+    $error_fields[] = 'password_confirm';
+}
+
+if (!empty($error_fields)) {
+    $response = [
+        'status' => 'false',
+        'type' => 1,
+        'message' => 'Проверьте правильность полей',
+        'fields' => $error_fields
     ];
 
-    $userCollection = json_decode(file_get_contents('../../data.json'));
-
-    if (isset($userCollection)) {
-        //проверка на наличе пользователя в бд, по умолчанию незарегистрирован
-        $isRegistered = false;
-        foreach ($userCollection as $object) {
-            if ($user['email'] === $object->email || $user['login'] === $object->login) {
-                $_SESSION['err_login'] = 'такой пользователь уже есть';
-                $isRegistered = true;
-                break;
-            }
-        }
-            if ($isRegistered) {
-                $_SESSION['message'] = "Такой пользователь зарегистрирован!";
-                header('Location: ../register.php');
-            } else {
-
-                $userCollection[] = $user;
-                file_put_contents('../../data.json', json_encode($userCollection));
-                $_SESSION['message'] = 'Регистрация прошла успешно!';
-                header('Location: ../index.php');
-            }
-
-    } else {
-        $userCollection[] = $user;
-        file_put_contents('../../data.json', json_encode($userCollection));
-        $_SESSION['message'] = 'Регистрация прошла успешно!';
-        header('Location: ../index.php');
-    }
-
+    echo json_encode($response);
+    die();
 }
 
-function test_input($data) {
+// создаем нового пользователя
+$user = [
+    'name' => $name,
+    'login' => $login,
+    'email' => $email,
+    'password' => md5($password)
+];
+
+$userCollection = json_decode(file_get_contents('../' . $path));
+
+//проверка на наличе пользователя в бд, по умолчанию незарегистрирован
+if (isset($userCollection)) {
+    foreach ($userCollection as $object) {
+        if ($user['email'] === $object->email || $user['login'] === $object->login) {
+
+            $response = [
+                'status' => false,
+                'type' => 2,
+                'message' => 'Пользователь с такой почтой или логином уже зарегистрирован!'
+            ];
+            echo json_encode($response);
+            die();
+        }
+    }
+}
+
+$userCollection[] = $user;
+file_put_contents('../' . $path, json_encode($userCollection));
+$response = [
+    'status' => true,
+    'message' => 'Регистрация прошла успешно!'
+];
+echo json_encode($response);
+
+
+function test_input($data)
+{
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);

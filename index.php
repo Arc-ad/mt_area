@@ -14,21 +14,19 @@ if(isset($_SESSION['user'])){
 </head>
 <body>
 <!-- Форма авторизации -->
-<form action="vendor/signin.php" method="post">
+<form>
     <label >Логин</label>
     <input type="text" name="login" placeholder="Введите свой логин" >
     <label>Пароль</label>
     <input type="password" name="password" placeholder="Введите пароль">
-    <button type="submit">Войти</button>
+    <button type="submit" class="login-btn">Войти</button>
     <p>
         У вас нет аккаунта? - <a href="register.php">Зарегистрируйтесь</a>!
     </p>
-    <?php
-        if(isset($_SESSION['message'])){
-            echo '<p lass="msg">'. $_SESSION['message'] . '</p>';
-        }
-        unset($_SESSION['message']);
-    ?>
+    <p class="msg none">Lorem ipsum.</p>
 </form>
+
+<script src="assets/js/jquery-3.6.3.js"></script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>
